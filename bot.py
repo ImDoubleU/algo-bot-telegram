@@ -16,6 +16,7 @@ from services.activity_tracker_service import UserActivityTracker
 from services.teacher_group_service import TeacherGroupManager, WEEKDAY_NAMES
 from services.teacher_hub_service import TeacherHubManager
 from core.callback_router import CallbackRouter
+from core.feedback_text import build_astrocoins_block
 from core.telegram_api import telegram_api_call
 from core.ui_errors import build_error_keyboard, build_error_text
 from core.validation import ValidationError, parse_date, parse_int, parse_time
@@ -119,9 +120,7 @@ def format_feedback(lesson_name, lesson_number, lesson_date, feedback_data, offs
 
 {educational_text}
 
-Начислены астрокоины за урок №{adjusted_lesson_number:02d} от {formatted_date}
-Количество астрокоинов, а также куда их потратить, можно посмотреть на сайте (Логин/пароль такие же как от платформы Алгоритмика)
-http://algoritmika52.ru/
+{build_astrocoins_block(adjusted_lesson_number, formatted_date)}
 
 👍 На онлайн-платформе «Алгоритмика» предоставлен весь материал, пройденный на уроках и прогресс 📈 ребенка.
 
@@ -201,9 +200,7 @@ def format_feedback_with_absent_students(lesson_name, lesson_number, lesson_date
 
 {absent_text}
 
-Начислены астрокоины за урок №{adjusted_lesson_number:02d} от {formatted_date}
-Количество астрокоинов, а также куда их потратить, можно посмотреть на сайте (Логин/пароль такие же как от платформы Алгоритмика)
-http://algoritmika52.ru/
+{build_astrocoins_block(adjusted_lesson_number, formatted_date)}
 
 👍 На онлайн-платформе «Алгоритмика» предоставлен весь материал, пройденный на уроках и прогресс 📈 ребенка.
 
@@ -243,6 +240,8 @@ def format_feedback_online_individual(lesson_name, lesson_number, lesson_date, f
 {greeting}
 
 {educational_text}{absent_text}
+
+{build_astrocoins_block(adjusted_lesson_number, formatted_date)}
 
 👍 На онлайн-платформе «Алгоритмика» предоставлен весь материал, пройденный на уроках и прогресс 📈 ребенка.
 

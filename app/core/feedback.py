@@ -2,6 +2,7 @@ from datetime import datetime
 
 from app.core.courses import CoursesService
 from app.core.models import ActionResult
+from core.feedback_text import build_astrocoins_block
 
 
 def get_time_based_greeting(now: datetime | None = None) -> str:
@@ -39,9 +40,7 @@ class FeedbackService:
 
 {educational_text}
 
-Начислены астрокоины за урок №{adjusted_lesson_number:02d} от {formatted_date}
-Количество астрокоинов, а также куда их потратить, можно посмотреть на сайте
-http://algoritmika52.ru/
+{build_astrocoins_block(adjusted_lesson_number, formatted_date)}
 
 На онлайн-платформе «Алгоритмика» предоставлен весь материал, пройденный на уроках, и прогресс ребенка.
 
@@ -73,9 +72,7 @@ http://algoritmika52.ru/
 
 {absent_text}
 
-Начислены астрокоины за урок №{adjusted_lesson_number:02d} от {formatted_date}
-Количество астрокоинов, а также куда их потратить, можно посмотреть на сайте
-http://algoritmika52.ru/
+{build_astrocoins_block(adjusted_lesson_number, formatted_date)}
 
 На онлайн-платформе «Алгоритмика» предоставлен весь материал, пройденный на уроках, и прогресс ребенка.
 
@@ -104,6 +101,8 @@ http://algoritmika52.ru/
 {greeting}
 
 {educational_text}{absent_text}
+
+{build_astrocoins_block(adjusted_lesson_number, formatted_date)}
 
 На онлайн-платформе «Алгоритмика» предоставлен весь материал, пройденный на уроках, и прогресс ребенка.
 
