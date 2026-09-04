@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-preview">
+    <div class="hero-main">
+        <span class="eyebrow">Feedback Preview</span>
+        <h1>Предпросмотр ОС</h1>
+        <p class="hero-text">{{ course_name }}, урок {{ lesson_number }}, дата {{ lesson_date }}</p>
+    </div>
+    <div class="card side-panel">
+        <div class="section-head compact">
+            <div>
+                <span class="eyebrow">Navigation</span>
+                <h2>Действия</h2>
+            </div>
+        </div>
+        <a class="ghost-link" href="/courses/{{ course_name }}">Назад к курсу</a>
+    </div>
+</section>
+
+<section class="grid two">
+    <div class="card">
+        <div class="section-head compact">
+            <div>
+                <span class="eyebrow">Selected</span>
+                <h2>Выбранные параметры</h2>
+            </div>
+        </div>
+        <div class="info-list">
+            <div><strong>Дата:</strong> {{ lesson_date }}</div>
+            <div><strong>Оффсет:</strong> {{ offset }}</div>
+            <div><strong>Формат:</strong> {{ 'Онлайн / индивидуальный' if is_online_or_individual else 'Обычный' }}</div>
+            <div><strong>Повторение:</strong> {{ 'Да' if is_repetition else 'Нет' }}</div>
+            <div><strong>Отсутствующие:</strong> {{ absent_students or 'Не указаны' }}</div>
+        </div>
+    </div>
+    <div class="card card-soft">
+        <div class="section-head compact">
+            <div>
+                <span class="eyebrow">Result</span>
+                <h2>Сгенерированный текст</h2>
+            </div>
+        </div>
+        {% if result.ok %}
+        <div class="output-pane-wrap">
+            <pre id="preview-feedback-output" class="prewrap output-pane">{{ result.data.feedback_text }}</pre>
+            <button
+                type="button"
+                class="copy-button copy-button-inline"
+                data-copy-target="preview-feedback-output"
+                data-copy-label="Скопировать"
+                data-copy-success="Скопировано"
+            >
+                Скопировать
+            </button>
+        </div>
+        {% else %}
+        <p class="error">{{ result.message }}</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

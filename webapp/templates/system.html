@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-system">
+    <div class="hero-main">
+        <span class="eyebrow">Observability</span>
+        <h1>Система и логи</h1>
+        <p class="hero-text">Мониторинг job runs, технического журнала и аналитических событий в одном диагностическом пространстве.</p>
+    </div>
+</section>
+
+<section class="grid two">
+    <div class="card">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Jobs</span>
+                <h2>Фоновые задачи</h2>
+            </div>
+        </div>
+        <div class="table-wrap elevated-table">
+            <table>
+                <tr><th>Job</th><th>Status</th><th>Details</th><th>Created</th></tr>
+                {% for job in jobs %}
+                <tr>
+                    <td>{{ job[1] }}</td>
+                    <td><span class="status-pill status-{{ job[2] }}">{{ job[2] }}</span></td>
+                    <td>{{ job[3] }}</td>
+                    <td>{{ job[6] }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="empty-cell">Запусков пока нет.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="stack-col">
+        <div class="card card-soft">
+            <div class="section-head compact">
+                <div>
+                    <span class="eyebrow">App Log</span>
+                    <h2>Последние app logs</h2>
+                </div>
+            </div>
+            <pre class="logpane">{{ app_log | join('\n') }}</pre>
+        </div>
+        <div class="card card-soft">
+            <div class="section-head compact">
+                <div>
+                    <span class="eyebrow">Analytics</span>
+                    <h2>Последние analytics logs</h2>
+                </div>
+            </div>
+            <pre class="logpane">{{ analytics_log | join('\n') }}</pre>
+        </div>
+    </div>
+</section>
+{% endblock %}

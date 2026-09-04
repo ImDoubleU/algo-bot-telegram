@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-course-detail">
+    <div class="hero-main">
+        <span class="eyebrow">Обратная связь</span>
+        <h1>{{ course_name }}</h1>
+        <p class="hero-text">Выберите урок и задайте параметры ручной выдачи ОС: дату, формат, смещение, режим
+            повторения
+            и список отсутствующих.</p>
+    </div>
+    <div class="card side-panel">
+        <div class="section-head compact">
+            <div>
+                <span class="eyebrow">Course</span>
+                <h2>Навигация</h2>
+            </div>
+        </div>
+        <a class="ghost-link" href="/courses">Назад к курсам</a>
+        <div class="metric-inline">
+            <strong>{{ lessons|length }}</strong>
+            <span>уроков в курсе</span>
+        </div>
+    </div>
+</section>
+
+<section class="lesson-grid">
+    {% for lesson_name, lesson_data in lessons %}
+    <article class="card lesson-card lesson-spotlight">
+        <div class="section-head compact">
+            <div>
+                <span class="eyebrow">Урок {{ loop.index }}</span>
+                <h2>{{ lesson_name }}</h2>
+            </div>
+        </div>
+        <p class="muted">{{ lesson_data.educational_results[:220] if lesson_data.educational_results else 'Описание
+            урока отсутствует.' }}{% if lesson_data.educational_results and lesson_data.educational_results|length > 220
+            %}...{% endif %}</p>
+
+        <form method="post" action="/feedback/preview" class="stack-form">
+            <input type="hidden" name="course_name" value="{{ course_name }}">
+            <input type="hidden" name="lesson_number" value="{{ loop.index }}">
+            <div class="form-grid two-cols lesson-meta-row">
+                <label><span class="field-label">Дата урока</span><input type="date" name="lesson_date"
+                        value="{{ today }}" required></label>
+                <label><span class="field-label">Смещение</span><input type="number" name="offset" value="0"></label>
+            </div>
+            <label class="lesson-format-field"><span class="field-label">Формат</span>
+                <select name="is_online_or_individual">
+                    <option value="false">Обычный</option>
+                    <option value="true">Онлайн / индивидуальный</option>
+                </select>
+            </label>
+            <label>Отсутствующие ученики<input type="text" name="absent_students"
+                    placeholder="Например: Ваня, Маша, Коля"></label>
+            <button type="submit">Сформировать ручную ОС</button>
+        </form>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

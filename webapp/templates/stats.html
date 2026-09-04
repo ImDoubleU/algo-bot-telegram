@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-stats-page">
+    <div class="hero-main">
+        <span class="eyebrow">Analytics</span>
+        <h1>Статистика</h1>
+        <p class="hero-text">Быстрый обзор активности, поиск пользователей и контроль динамики без перегруженных аналитических экранов.</p>
+    </div>
+</section>
+
+<section class="grid two">
+    <div class="card">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Filters</span>
+                <h2>Поиск и срез</h2>
+            </div>
+        </div>
+        <form method="get" action="/stats" class="stack-form">
+            <label>Поиск пользователя<input type="text" name="q" value="{{ q }}"></label>
+            <label>Дата<input type="date" name="date" value="{{ date }}"></label>
+            <button type="submit">Обновить</button>
+        </form>
+        <div class="stat-strip">
+            <div class="mini-stat"><strong>{{ daily_stats.total_actions }}</strong><span>действий</span></div>
+            <div class="mini-stat"><strong>{{ daily_stats.unique_users }}</strong><span>пользователей</span></div>
+            <div class="mini-stat"><strong>{{ daily_stats.active_courses }}</strong><span>курсов</span></div>
+        </div>
+    </div>
+    <div class="card card-soft">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Users</span>
+                <h2>Результаты поиска</h2>
+            </div>
+        </div>
+        {% if users %}
+        <ul class="simple-list">
+            {% for u in users %}
+            <li>{{ u[1] }} ({{ u[2] }} {{ u[3] }})</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty-state">Пока нет результатов. Попробуйте ввести username или имя.</p>
+        {% endif %}
+
+        {% if selected_user %}
+        <div class="divider"></div>
+        <div class="info-list">
+            <div><strong>Пользователь:</strong> {{ selected_user.user_info.username }}</div>
+            <div><strong>Действий:</strong> {{ selected_user.stats.total_actions }}</div>
+            <div><strong>Курсов:</strong> {{ selected_user.stats.courses_accessed }}</div>
+            <div><strong>Последняя активность:</strong> {{ selected_user.user_info.last_seen }}</div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

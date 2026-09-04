@@ -1,0 +1,29 @@
+[Unit]
+Description=Algo Bot Telegram long-polling service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=algobot
+Group=algobot
+WorkingDirectory=/opt/algo-bot
+EnvironmentFile=/etc/algo-bot/telegram.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+ExecStartPre=/opt/algo-bot/.venv/bin/python scripts/preflight_telegram.py
+ExecStart=/opt/algo-bot/.venv/bin/python -u bot.py
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=90
+TimeoutStopSec=30
+KillSignal=SIGINT
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/algo-bot/logs /opt/algo-bot/backups /opt/algo-bot/exports
+
+[Install]
+WantedBy=multi-user.target

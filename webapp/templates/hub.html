@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-hub">
+    <div class="hero-main">
+        <span class="eyebrow">Hub</span>
+        <h1>Внутренний хаб</h1>
+        <p class="hero-text">Собранные в одном месте материалы, ссылки и внутренние разделы.</p>
+        <div class="hero-badges">
+            <span class="hero-badge">{{ sections|length }} {{ sections|length|ru_plural('раздел', 'раздела', 'разделов')
+                }}</span>
+            {% if selected %}
+            <span class="hero-badge">{{ selected.buttons_count }} {{ selected.buttons_count|ru_plural('материал',
+                'материала', 'материалов') }}</span>
+            {% endif %}
+        </div>
+    </div>
+    <aside class="hero-aside hub-aside">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Sections</span>
+                <h2>Разделы</h2>
+            </div>
+        </div>
+        <div class="hub-section-list">
+            {% for section in sections %}
+            <a class="hub-section-link {% if selected and selected.id == section.id %}hub-section-link-active{% endif %}"
+                href="/hub?section={{ section.id }}">
+                <strong class="hub-section-title">{{ section.title }}</strong>
+                <span class="hub-section-meta">{{ section.buttons_count }} {{
+                    section.buttons_count|ru_plural('материал', 'материала', 'материалов') }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </aside>
+</section>
+
+<section class="card card-soft hub-stage">
+    {% if selected %}
+    {% set action_buttons = selected.action_buttons if selected.action_buttons is defined else selected.buttons %}
+    {% set nav_buttons = selected.nav_buttons if selected.nav_buttons is defined else [] %}
+    {% if selected.parent_section %}
+    <div class="hub-breadcrumbs">
+        <a class="hub-breadcrumb" href="{{ selected.parent_section.href }}">{{ selected.parent_section.title }}</a>
+        <span>/</span>
+        <span>{{ selected.title }}</span>
+    </div>
+    {% endif %}
+
+    <div class="hub-stage-head">
+        <div>
+            <span class="eyebrow">Details</span>
+            <h2>{{ selected.title }}</h2>
+        </div>
+    </div>
+
+
+    {% if action_buttons %}
+    <div class="hub-resource-grid">
+        {% for btn in action_buttons %}
+        {% set btn_kind = btn.kind if btn.kind is defined else ('external' if btn.is_external else 'section' if btn.href
+        else 'static') %}
+        {% set btn_tag = btn.tag if btn.tag is defined else ('Ссылка' if btn.is_external else 'Раздел' if btn.href else
+        'Недоступно') %}
+        {% set btn_note = btn.note if btn.note is defined else ('Откроется в новой вкладке' if btn.is_external else
+        'Открыть внутри хаба' if btn.href else 'Пока нет в веб-версии') %}
+        {% if btn.href %}
+        <a class="hub-resource-card hub-resource-card-{{ btn_kind }} {% if btn.is_external %}hub-resource-card-external{% endif %}"
+            href="{{ btn.href }}" {% if btn.is_external %}target="_blank" rel="noreferrer" {% endif %}>
+            <span class="hub-resource-tag">{{ btn_tag }}</span>
+            <strong>{{ btn.text }}</strong>
+            <span class="hub-resource-note">{{ btn_note }}</span>
+        </a>
+        {% else %}
+        <div class="hub-resource-card hub-resource-card-static">
+            <span class="hub-resource-tag">{{ btn_tag }}</span>
+            <strong>{{ btn.text }}</strong>
+            <span class="hub-resource-note">{{ btn_note }}</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if nav_buttons %}
+    <div class="hub-nav-row">
+        {% for btn in nav_buttons %}
+        <a class="hub-nav-pill {% if btn.callback == 'back_to_main_menu' %}hub-nav-pill-home{% endif %}"
+            href="{{ btn.href }}">
+            {{ btn.text }}
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="empty-state">Выберите раздел вверху, чтобы открыть описание и доступные материалы.</p>
+    {% endif %}
+</section>
+{% endblock %}

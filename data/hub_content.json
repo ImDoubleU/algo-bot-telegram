@@ -1,0 +1,259 @@
+{
+	"hub_structure": {
+		"main_sections": [
+			{
+				"id": "hub_tables_docs",
+				"title": "🎯 Таблицы, документы и ссылки",
+				"text": "Доступ к полезным таблицам и документам для преподавателей:",
+				"buttons": [
+					{
+						"text": "📊 Мой рабочий файл",
+						"callback": "my_work_file"
+					},
+					{
+						"text": "📊 Шаблон рабочего файла",
+						"callback": "url_schedule",
+						"url": "https://docs.google.com/spreadsheets/d/1zA_FGxffraI6P9Hba1K1OCfw5Mpy5G7BRxH2YLiqH48/edit?usp=sharing"
+					},
+					{
+						"text": "📋 Инфо о преподавателях",
+						"callback": "url_reports",
+						"url": "https://docs.google.com/spreadsheets/d/1itcnCiqpVP1mr3_IzzdrWtqDOc5gRh9SoGYt4yy2gGY/edit?gid=99507535#gid=99507535"
+					},
+					{
+						"text": "💵 Модель оплаты",
+						"callback": "url_contacts",
+						"url": "https://docs.google.com/spreadsheets/d/1mD3E9lECkQ4bk714nWOVkzM2r-byp2FfzEIwr1acguw/edit?gid=0#gid=0"
+					},
+					{
+						"text": "📈 Работа с дешбордом (KPI)",
+						"callback": "url_dashboard",
+						"url": "https://lms.algoritmika.org/superset/report/view/33"
+					},
+					{
+						"text": "🌐 Инструкция к ОБО",
+						"callback": "url_backoffice",
+						"url": "https://docs.google.com/document/d/1u-P1_of1n1KF8TuBaXwXedVNKaUanOVkettjTjRmWr0/edit?tab=t.0#heading=h.hxr378sg1i7b"
+					},
+					{
+						"text": "📖 База знаний",
+						"callback": "url_database",
+						"url": "https://knowledgebase.algoritmika.su/obshhaia-informaciia-po-obuceniiu-v-algoritmike?clckid=a3ace6ce"
+					},
+					{
+						"text": "📌 Сайт для преподавателей",
+						"callback": "url_teachers_site",
+						"url": "https://teachers.algoritmika.org/"
+					},
+					{
+						"text": "🌟 Инструкция по астрокоинам",
+						"callback": "url_astrocoins",
+						"url": "https://docs.google.com/spreadsheets/d/10zLA_UpIt1_GS17BTPPalM83cQ1c7e_daAl25rTZVWM/edit?usp=sharing"
+					},
+					{
+						"text": "✨ Начисление астрокоинов",
+						"callback": "url_count_astrocoins",
+						"url": "https://max.ru/id525601030904_3_bot"
+					},
+					{
+						"text": "🌆 Организация онлайн уроков",
+						"callback": "url_online_lesson",
+						"url": "https://docs.google.com/document/d/1jihIIKOiJ1vabD8-MuHUP6vyF3nwB1VQrCpbvX3ZkI4/edit?tab=t.0#heading=h.got0rlz3aq4w"
+					},
+					{
+						"text": "🖥️ Альтернативные онлайн комнаты",
+						"callback": "url_online_rooms"
+					},
+					{
+						"text": "🟦 Группа Вконтакте",
+						"callback": "url_vk_group",
+						"url": "https://vk.com/algoritmika_n.novgorod"
+					}
+				]
+			},
+			{
+				"id": "hub_other_resources",
+				"title": "📚 Ресурсы для обучения",
+				"text": "Список необходимых ресурсов для успешного изучения разных курсов:",
+				"buttons": [
+					{
+						"text": "💻 ЛМС",
+						"callback": "url_main_site",
+						"url": "https://lms.algoritmika.org"
+					},
+					{
+						"text": "✔️ Вход в алгоритмику",
+						"callback": "url_learn_site",
+						"url": "https://learn.algoritmika.org/login"
+					},
+					{
+						"text": "🔅 Google аккаунт",
+						"callback": "url_google_acc",
+						"url": "https://docs.google.com/document/d/1_-vPS3_njeEKxiqWME2cPZ1kVnjdKvjOkMiMfTW548I/edit?tab=t.0#heading=h.m39m3a2rpk7l"
+					},
+					{
+						"text": "🔆 Яндекс аккаунт",
+						"callback": "url_yandex_acc",
+						"url": "https://yandex.ru/support/id/ru/authorization/registration"
+					},
+					{
+						"text": "⌨️ Аккаунт Tilda",
+						"callback": "url_tilda_acc",
+						"url": "https://docs.google.com/document/d/1YuhDQahxjwPX-Ls_G_qeboa_z_oOR7oCSuXw2R4ybOA/edit?tab=t.0"
+					},
+					{
+						"text": "🎓 Аккаунт GitHub",
+						"callback": "url_github_acc",
+						"url": "https://docs.google.com/document/d/1HjbusSLukIWrzJ56lf22iWJ4gyBEi6AiX-PSlB31FXA/edit?tab=t.0"
+					},
+					{
+						"text": "🐍 AlgoVSCode",
+						"callback": "url_algovscode"
+					},
+					{
+						"text": "😺 Scratch",
+						"callback": "url_scratch",
+						"url": "https://scratch.mit.edu"
+					},
+					{
+						"text": "👶 Scratch Junior",
+						"callback": "url_scratch_jn",
+						"url": "https://knowledgebase.algoritmika.org/books/voprosy-po-kursam/page/tolko-v-ekstrennyx-slucaiax-kak-ustanovit-scratch-junior-na-pk"
+					},
+					{
+						"text": "🎮 Roblox & Roblox Studio",
+						"callback": "url_roblox",
+						"url": "https://knowledgebase.algoritmika.org/books/voprosy-po-kursam/page/ustanovka-roblox-studio-i-roblox-player"
+					},
+					{
+						"text": "🕹️ Unity",
+						"callback": "url_unity",
+						"url": "https://knowledgebase.algoritmika.org/voprosy-po-kursam/Razrabotka-igr-na-Unity/Instrukciya-po-ustanovke-programm-dlya-kursa-Unity"
+					}
+				]
+			},
+			{
+				"id": "hub_contacts",
+				"title": "📱 Контакты",
+				"text": "Список контактов:",
+				"buttons": [
+					{
+						"text": "👨‍💼 Администратор",
+						"callback": "contact_admin"
+					},
+					{
+						"text": "🤖 Бот поддержки",
+						"callback": "contact_support_bot"
+					},
+					{
+						"text": "📰 Чат преподавателей",
+						"callback": "contact_teachers_chat",
+						"url": "https://t.me/+an3t1SAETSM5YTEy"
+					}
+				]
+			}
+		],
+		"subsections": {
+			"contact_admin": {
+				"title": "👨‍💼 Администратор",
+				"text": "Контакт администратора:\n\n📧 *Телеграм:* @imdoubleu\n\n*Чем может помочь:*\n• Вопросы по доступу\n• Организационные вопросы\n• Решение проблем",
+				"buttons": [
+					{
+						"text": "✉️ Написать администратору",
+						"url": "https://t.me/imdoubleu"
+					},
+					{
+						"text": "◀️ Назад к ресурсам",
+						"callback": "hub_other_resources"
+					},
+					{
+						"text": "◀️ Назад к хабу",
+						"callback": "back_to_teacher_hub"
+					},
+					{
+						"text": "🔄 Главное меню",
+						"callback": "back_to_main_menu"
+					}
+				]
+			},
+			"contact_support_bot": {
+				"title": "🤖 Бот поддержки",
+				"text": "Бот технической поддержки:\n\n🤖 *Бот:* @algoritmika_support_bot\n\n*Чем может помочь:*\n• Технические вопросы\n• Проблемы с платформой\n• Общение с сотрудниками поддержки",
+				"buttons": [
+					{
+						"text": "🤖 Открыть бота",
+						"url": "https://t.me/algoritmika_support_bot"
+					},
+					{
+						"text": "◀️ Назад к ресурсам",
+						"callback": "hub_other_resources"
+					},
+					{
+						"text": "◀️ Назад к хабу",
+						"callback": "back_to_teacher_hub"
+					},
+					{
+						"text": "🔄 Главное меню",
+						"callback": "back_to_main_menu"
+					}
+				]
+			},
+			"url_online_rooms": {
+				"title": "🖥️ Альтернативные онлайн комнаты",
+				"text": "Вы можете создать резервную комнату и добавить ссылку на неё в ЛМС.",
+				"buttons": [
+					{
+						"text": "Яндекс телемост",
+						"url": "https://telemost.yandex.ru/"
+					},
+					{
+						"text": "SaluteJazz",
+						"url": "https://salutejazz.ru/"
+					},
+					{
+						"text": "Как добавить резервную комнату?",
+						"url": "https://docs.google.com/document/d/1jihIIKOiJ1vabD8-MuHUP6vyF3nwB1VQrCpbvX3ZkI4/edit?tab=t.0#heading=h.got0rlz3aq4w"
+					},
+					{
+						"text": "◀️ Назад к документам",
+						"callback": "hub_tables_docs"
+					},
+					{
+						"text": "◀️ Назад к хабу",
+						"callback": "back_to_teacher_hub"
+					},
+					{
+						"text": "🔄 Главное меню",
+						"callback": "back_to_main_menu"
+					}
+				]
+			},
+			"url_algovscode": {
+				"title": "🐍 Установка AlgoVSCode",
+				"text": "При установке AlgoVSCode возможно потребуется настройка домена. Инструкция по кнопке ниже!",
+				"buttons": [
+					{
+						"text": "🔩 Установочный файл",
+						"url": "https://knowledgebase.algoritmika.org/voprosy-po-kursam/kursy-python/kak-ustanovit-algo-vscode-na-windows"
+					},
+					{
+						"text": "⚙️ Инструкция",
+						"url": "https://disk.yandex.ru/i/IOCuqul5Y033tw"
+					},
+					{
+						"text": "◀️ Назад к ресурсам",
+						"callback": "hub_other_resources"
+					},
+					{
+						"text": "◀️ Назад к хабу",
+						"callback": "back_to_teacher_hub"
+					},
+					{
+						"text": "🔄 Главное меню",
+						"callback": "back_to_main_menu"
+					}
+				]
+			}
+		}
+	}
+}

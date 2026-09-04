@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-group">
+    <div class="hero-main">
+        <span class="eyebrow">Group Detail</span>
+        <h1>{{ group["group_name"] }}</h1>
+        <p class="hero-text">{{ group["course_name"] }} · {{ teacher_name }} · {{ mode_label }} · {{ place_label }}</p>
+        <div class="hero-badges">
+            <span class="hero-badge">Урок {{ group["current_lesson_number"] }}</span>
+            <span class="hero-badge">{{ group["lesson_time"] }}</span>
+            <span class="hero-badge">{{ 'Активна' if group['is_active'] else 'На паузе' }}</span>
+        </div>
+    </div>
+    <div class="card side-panel">
+        <div class="section-head compact">
+            <div>
+                <span class="eyebrow">Navigation</span>
+                <h2>Работа с группой</h2>
+            </div>
+        </div>
+        <a class="ghost-link" href="/groups?teacher_id={{ group['teacher_id'] }}">К расписанию преподавателя</a>
+        {% if latest_output %}
+        <a class="text-link prominent-link" href="/groups/{{ group['id'] }}?output_id={{ latest_output[0] }}#output-view">Открыть последнюю ОС</a>
+        {% endif %}
+        {% if run_result %}
+        <div class="flash {{ 'flash-success' if run_result.ok else 'flash-error' }}">{{ run_result.message }}</div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="group-detail-grid">
+    <div class="card">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Settings</span>
+                <h2>Параметры группы</h2>
+            </div>
+        </div>
+        <form method="post" action="/groups/{{ group['id'] }}/update" class="stack-form">
+            <label>Название<input type="text" name="group_name" value="{{ group['group_name'] }}"></label>
+            <label>Курс<input type="text" name="course_name" value="{{ group['course_name'] }}"></label>
+            <div class="form-grid two-cols">
+                <label>Смещение<input type="number" name="lesson_offset" value="{{ group['lesson_offset'] }}"></label>
+                <label>Следующий урок<input type="number" name="current_lesson_number" value="{{ group['current_lesson_number'] }}"></label>
+            </div>
+            <div class="form-grid two-cols">
+                <label>Дата первого занятия<input type="date" name="first_lesson_date" value="{{ group['first_lesson_date'] }}"></label>
+                <label>День недели
+                    <select name="weekday">
+                        {% for value, title in weekday_options %}
+                        <option value="{{ value }}" {% if value == group['weekday'] %}selected{% endif %}>{{ title }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <div class="form-grid three-cols">
+                <label>Время<input type="time" name="lesson_time" value="{{ group['lesson_time'] }}"></label>
+                <label>Формат
+                    <select name="lesson_mode">
+                        {% for value, title in mode_options %}
+                        <option value="{{ value }}" {% if value == group['lesson_mode'] %}selected{% endif %}>{{ title }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>Место
+                    <select name="lesson_place">
+                        {% for value, title in place_options %}
+                        <option value="{{ value }}" {% if value == group['lesson_place'] %}selected{% endif %}>{{ title }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <div class="checkbox-line">
+                <input type="hidden" name="is_active" value="0">
+                <label class="checkbox-row"><input type="checkbox" name="is_active" value="1" {% if group['is_active'] %}checked{% endif %}>Группа участвует в авто-выдаче</label>
+            </div>
+            <button type="submit">Сохранить изменения</button>
+        </form>
+
+        <div class="divider"></div>
+
+        <form method="post" action="/groups/{{ group['id'] }}/run-auto-feedback" class="stack-form">
+            <div class="section-head compact">
+                <div>
+                    <span class="eyebrow">Action</span>
+                    <h2>Сформировать авто-ОС для выбранной недели</h2>
+                </div>
+            </div>
+            <label>Дата урока<input type="date" name="lesson_date" value="{{ selected_week.lesson_date if selected_week else today }}"></label>
+            <button type="submit">Сформировать авто-ОС</button>
+        </form>
+
+        <form method="post" action="/groups/{{ group['id'] }}/delete" class="group-delete-form" onsubmit="return confirm('Удалить группу? Это действие нельзя отменить.');">
+            <button type="submit" class="danger group-delete-button">Удалить группу</button>
+        </form>
+    </div>
+
+    <div class="stack-col">
+        <div class="card">
+            <div class="section-head">
+                <div>
+                    <span class="eyebrow">Week Navigator</span>
+                    <h2>Недели авто-ОС</h2>
+                </div>
+            </div>
+            <div class="week-toolbar">
+                <div class="week-toolbar-actions">
+                    {% if previous_week %}
+                    <a class="week-shift" href="/groups/{{ group['id'] }}?lesson_date={{ previous_week.lesson_date }}#output-view">← Предыдущая неделя</a>
+                    {% else %}
+                    <span class="week-shift week-shift-disabled">← Предыдущая неделя</span>
+                    {% endif %}
+
+                    <a class="week-shift week-shift-current" href="/groups/{{ group['id'] }}?lesson_date={{ reference_week_date }}#output-view">Текущая неделя</a>
+
+                    {% if next_week %}
+                    <a class="week-shift" href="/groups/{{ group['id'] }}?lesson_date={{ next_week.lesson_date }}#output-view">Следующая неделя →</a>
+                    {% else %}
+                    <span class="week-shift week-shift-disabled">Следующая неделя →</span>
+                    {% endif %}
+                </div>
+                <p class="section-note">По прошедшим урокам ОС подготавливается автоматически и сразу открывается для просмотра.</p>
+            </div>
+            <div class="week-nav">
+                {% for week in week_options %}
+                <a
+                    class="week-chip week-state-{{ week.state }} {% if week.is_selected %}week-chip-active{% endif %}"
+                    href="/groups/{{ group['id'] }}?lesson_date={{ week.lesson_date }}#output-view"
+                >
+                    <strong>{{ week.label }}</strong>
+                    <span>Урок {{ week.lesson_number if week.is_valid else '—' }}</span>
+                    <small>
+                        {% if week.state == 'ready' %}ОС готова
+                        {% elif week.state == 'future' %}Будущая неделя
+                        {% elif week.state == 'error' %}Не удалось подготовить
+                        {% else %}Недоступно
+                        {% endif %}
+                    </small>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card" id="output-view">
+            <div class="section-head">
+                <div>
+                    <span class="eyebrow">Feedback Output</span>
+                    <h2>Сформированная ОС</h2>
+                </div>
+            </div>
+            {% if selected_week %}
+            <div class="info-list">
+                <div><strong>Дата урока:</strong> {{ selected_week.full_label }}</div>
+                <div><strong>Урок:</strong> {{ selected_week.lesson_number if selected_week.is_valid else '—' }}</div>
+            </div>
+            <div class="divider"></div>
+            {% endif %}
+
+            {% if selected_output %}
+            <div class="info-list">
+                <div><strong>Название урока:</strong> {{ selected_output[3] }}</div>
+                <div><strong>Статус:</strong> {{ selected_output[6] }}</div>
+                <div><strong>Сгенерирован:</strong> {{ selected_output[7] }}</div>
+            </div>
+            <div class="divider"></div>
+            <div class="output-pane-wrap">
+                <pre id="group-feedback-output" class="prewrap output-pane">{{ selected_output[4] }}</pre>
+                <button
+                    type="button"
+                    class="copy-button copy-button-inline"
+                    data-copy-target="group-feedback-output"
+                    data-copy-label="Скопировать"
+                    data-copy-success="Скопировано"
+                >
+                    Скопировать
+                </button>
+            </div>
+            {% else %}
+            <p class="empty-state">{{ selected_hint or 'Для этой недели ОС пока не подготовлена.' }}</p>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,54 @@
+# Python caches and test artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+bot_env/
+.venv/
+venv/
+
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+private/
+*.pem
+*.key
+*.p12
+
+# Runtime state and personal exports
+logs/
+backups/
+exports/
+groups_for_user.json
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.csv
+
+# Generated bundles and temporary files
+dist/
+tmp/
+tmp_*
+*.tmp
+*.bak
+*.log
+
+# Local deployment state
+deploy/windows/caddy/logs/
+deploy/windows/caddy/data/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

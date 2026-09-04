@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-dashboard">
+    <div class="hero-main">
+        <span class="eyebrow">{{ 'Teacher Cabinet' if user.role == 'teacher' else 'Admin Center' }}</span>
+        <h1>Ваш рабочий кабинет</h1>
+        <p class="hero-text">
+            Всё нужное по урокам, группам и ОС собрано в одном месте.
+        </p>
+        <div class="hero-badges">
+            <span class="hero-badge">Авто-ОС</span>
+            <span class="hero-badge">Ручная-ОС</span>
+            <span class="hero-badge">Документы</span>
+        </div>
+        <div class="hero-actions">
+            <a class="hero-button" href="/groups">Открыть расписание</a>
+            <a class="hero-button ghost-link" href="/courses">Открыть курсы</a>
+        </div>
+    </div>
+    <div class="hero-aside">
+        <div class="metric-card feature-metric">
+            <span class="metric-label">{{ 'Количество ваших групп' if user.role == 'teacher' else 'Групп в системе'
+                }}</span>
+            <strong class="metric-value">{{ groups_count }}</strong>
+            <span class="metric-footnote">
+                Группы добавленные в систему автогенерации ОС.
+            </span>
+        </div>
+    </div>
+</section>
+
+{% if message or error %}
+<section class="dashboard-flashes">
+    {% if message %}
+    <div class="flash flash-success">
+        {% if message == "password_changed" %}
+        Пароль обновлён. В кабинете администратора уже отображается актуальное значение.
+        {% else %}
+        {{ message }}
+        {% endif %}
+    </div>
+    {% endif %}
+    {% if error %}
+    <div class="flash flash-error">
+        {% if error == "password_current_invalid" %}
+        Текущий пароль введён неверно.
+        {% elif error == "password_mismatch" %}
+        Новый пароль и подтверждение не совпадают.
+        {% else %}
+        {{ error }}
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endif %}
+
+<section class="dashboard-grid">
+    <div class="card">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Workspace</span>
+                <h2>Быстрые переходы</h2>
+            </div>
+        </div>
+        <div class="action-grid action-grid-wide">
+            <a class="action-tile accent-a" href="/groups">
+                <strong>Расписание</strong>
+                <span>Недельная сетка групп, переход в группу и просмотр готовой ОС.</span>
+            </a>
+            <a class="action-tile accent-b" href="/courses">
+                <strong>Курсы</strong>
+                <span>Ручное формирование ОС по уроку, дате и формату занятия.</span>
+            </a>
+            <a class="action-tile accent-c" href="/hub">
+                <strong>Хаб</strong>
+                <span>Материалы, ссылки и внутренние разделы в одном месте.</span>
+            </a>
+            {% if user.role == 'admin' %}
+            <a class="action-tile accent-e" href="/system/logs">
+                <strong>Система</strong>
+                <span>Логи, фоновые задачи и технические события.</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="stack-col">
+        <div class="card card-soft">
+            <div class="section-head">
+                <div>
+                    <span class="eyebrow">Signal</span>
+                    <h2>Уведомления</h2>
+                </div>
+            </div>
+            <div class="notification-list">
+                {% if notifications %}
+                {% for item in notifications %}
+                <article class="notification-item notification-{{ item[1] }}">
+                    <strong>{{ item[2] }}</strong>
+                    <p>{{ item[3] }}</p>
+                    <small>{{ item[5] }}</small>
+                </article>
+                {% endfor %}
+                {% else %}
+                <p class="empty-state">Новых уведомлений пока нет.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card card-soft account-password-card">
+            <div class="section-head compact">
+                <div>
+                    <span class="eyebrow">Account</span>
+                    <h2>Смена пароля</h2>
+                </div>
+            </div>
+            <p class="muted account-password-copy">После сохранения новый пароль сразу станет актуальным для вашего
+                входа.</p>
+            <form method="post" action="/account/password" class="stack-form account-password-form">
+                <label>Текущий пароль<input type="password" name="current_password" required></label>
+                <label>Новый пароль<input type="password" name="new_password" required></label>
+                <label>Подтверждение<input type="password" name="confirm_password" required></label>
+                <button type="submit">Обновить пароль</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

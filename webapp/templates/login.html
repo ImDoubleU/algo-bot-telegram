@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход · Algo Bot Web</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-page">
+    <section class="login-shell">
+        <div class="login-side">
+            <span class="eyebrow">Algo Bot Web</span>
+            <h1>Локальный центр управления</h1>
+            <p>Работайте с курсами, расписанием и автогенерацией ОС в одном спокойном, структурированном интерфейсе.</p>
+        </div>
+        <form class="card login-card" method="post" action="/login">
+            <div class="section-head compact">
+                <div>
+                    <span class="eyebrow">Auth</span>
+                    <h2>Вход в систему</h2>
+                </div>
+            </div>
+            <label>Логин<input type="text" name="username" required></label>
+            <label>Пароль<input type="password" name="password" required></label>
+            {% if error %}<p class="error">{{ error }}</p>{% endif %}
+            <button type="submit" class="login-submit-button">Войти</button>
+
+            <details class="login-help">
+                <summary>Забыли пароль?</summary>
+                <div class="login-help-card">
+                    <strong>Напишите администратору в Telegram</strong>
+                    <p>Если не получается войти, администратор поможет восстановить доступ и подскажет актуальный пароль.</p>
+                    <a class="ghost-link login-help-link" href="{{ admin_telegram_url }}" target="_blank" rel="noreferrer">
+                        {{ admin_telegram_tag }}
+                    </a>
+                </div>
+            </details>
+        </form>
+    </section>
+</body>
+</html>

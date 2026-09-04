@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-schedule">
+    <div class="hero-main">
+        <span class="eyebrow">Schedule</span>
+        <h1>Расписание групп</h1>
+        <p class="hero-text">Недельный календарь с быстрым входом в каждую группу, настройками авто-ОС и просмотром
+            готовых результатов.</p>
+        <div class="hero-badges">
+            <span class="hero-badge">Всего: {{ groups_count }}</span>
+            <span class="hero-badge">Активных: {{ active_groups_count }}</span>
+        </div>
+    </div>
+    <div class="card side-panel">
+        <div class="section-head compact">
+            <div>
+                <span class="eyebrow">Control</span>
+                <h2>Быстрые действия</h2>
+            </div>
+        </div>
+        {% if user.role == 'admin' %}
+        <form method="get" action="/groups" class="stack-form">
+            <label>
+                <span>Преподаватель</span>
+                <select name="teacher_id" onchange="this.form.submit()">
+                    {% for teacher in teacher_choices %}
+                    <option value="{{ teacher.teacher_id }}" {% if teacher.teacher_id==teacher_id %}selected{% endif %}>
+                        {{ teacher.label }} · {{ teacher.groups_count }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </form>
+        {% endif %}
+        <button type="button" class="primary-button wide-button" onclick="toggleAddGroup()">Добавить группу</button>
+        <p class="muted compact-copy">Форма открывается на этой же странице.</p>
+</section>
+
+{% if error %}
+<div class="flash flash-error">{{ error }}</div>
+{% endif %}
+{% if success %}
+<div class="flash flash-success">{{ success }}</div>
+{% endif %}
+
+<section id="add-group-panel" class="card form-drawer hidden-panel">
+    <div class="section-head">
+        <div>
+            <span class="eyebrow">Create</span>
+            <h2>Новая группа для авто-ОС</h2>
+        </div>
+        <button type="button" class="ghost-button" onclick="toggleAddGroup()">Скрыть форму</button>
+    </div>
+    <form method="post" action="/groups/create" class="stack-form">
+        {% if user.role == 'admin' %}
+        <div class="form-grid two-cols">
+            <label>Teacher ID<input type="number" name="teacher_id" value="{{ teacher_id or '' }}" required></label>
+            <label>Teacher Chat ID<input type="number" name="teacher_chat_id" value="{{ teacher_id or 0 }}"
+                    required></label>
+        </div>
+        {% else %}
+        <input type="hidden" name="teacher_id" value="{{ teacher_id or 0 }}">
+        <input type="hidden" name="teacher_chat_id" value="{{ teacher_id or 0 }}">
+        {% endif %}
+        <div class="form-grid two-cols">
+            <label>Название группы<input type="text" name="group_name" required></label>
+            <label>Курс
+                <select name="course_name" required>
+                    <option value="">Выберите курс</option>
+                    {% for course_name in course_names %}
+                    <option value="{{ course_name }}">{{ course_name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="form-grid three-cols">
+            <label>Смещение<input type="number" name="lesson_offset" value="0"></label>
+            <label>Следующий урок<input type="number" name="current_lesson_number" value="1"></label>
+            <label>День недели
+                <select name="weekday">
+                    {% for value, title in weekday_options %}
+                    <option value="{{ value }}">{{ title }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="form-grid three-cols">
+            <label>Дата первого занятия<input type="date" name="first_lesson_date" required></label>
+            <label>Время<input type="time" name="lesson_time" required></label>
+            <label>Формат
+                <select name="lesson_mode">
+                    {% for value, title in mode_options %}
+                    <option value="{{ value }}">{{ title }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <label>Место проведения
+            <select name="lesson_place">
+                {% for value, title in place_options %}
+                <option value="{{ value }}">{{ title }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit">Сохранить группу</button>
+    </form>
+</section>
+
+<section class="card">
+    <div class="section-head">
+        <div>
+            <span class="eyebrow">Week View</span>
+            <h2>Недельная сетка</h2>
+        </div>
+    </div>
+    <div class="schedule-table-wrap">
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>День</th>
+                    <th>Группы</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day in schedule_rows %}
+                <tr>
+                    <td class="schedule-day">{{ day.weekday_title }}</td>
+                    <td>
+                        {% if day.groups %}
+                        <div class="schedule-lane">
+                            {% for group in day.groups %}
+                            <a class="schedule-card" href="/groups/{{ group['id'] }}">
+                                <div class="schedule-card-top">
+                                    <strong>{{ group["lesson_time"] }}</strong>
+                                    <span
+                                        class="status-pill {{ 'status-success' if group['is_active'] else 'status-content_error' }}">{{
+                                        'Активна' if group['is_active'] else 'Пауза' }}</span>
+                                </div>
+                                <h3>{{ group["group_name"] }}</h3>
+                                <p>{{ group["course_name"] }}</p>
+                                <div class="schedule-meta">
+                                    <span>{{ group["lesson_mode_label"] }}</span>
+                                    <span>{{ group["lesson_place_label"] }}</span>
+                                    <span>Урок {{ group["current_lesson_number"] }}</span>
+                                </div>
+                                <div class="schedule-submeta">
+                                    <span>Следующая дата: {{ group["next_feedback_date"] }}</span>
+                                    {% if group["latest_output_id"] %}
+                                    <span>Готовая ОС: {{ group["latest_output_date"] }}</span>
+                                    {% else %}
+                                    <span>ОС пока не сформирована</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <span class="empty-state">На этот день группы не назначены.</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+    function toggleAddGroup() {
+        const panel = document.getElementById('add-group-panel');
+        panel.classList.toggle('hidden-panel');
+        if (!panel.classList.contains('hidden-panel')) {
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+</script>
+{% endblock %}

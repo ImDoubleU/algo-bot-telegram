@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-access">
+    <div class="hero-main">
+        <span class="eyebrow">Access</span>
+        <h1>Доступы</h1>
+        <p class="hero-text">Текущие web-учётки, быстрый просмотр логина и пароля, смена пароля и удаление лишних пользователей.</p>
+        <div class="hero-badges">
+            <span class="hero-badge">{{ web_users|length }} {{ web_users|length|ru_plural('учётка', 'учётки', 'учёток') }}</span>
+            <span class="hero-badge">Admin control</span>
+        </div>
+    </div>
+    <aside class="hero-aside access-hero-aside">
+        <div class="metric-inline access-hero-stat">
+            <strong>{{ web_users|length }}</strong>
+            <span>аккаунтов в web-доступе</span>
+        </div>
+        <p class="muted access-hero-copy">Слева все текущие пользователи, справа быстрое создание новой учётки без лишних полей на первом экране.</p>
+    </aside>
+</section>
+
+{% if message or error %}
+<section class="access-flashes">
+    {% if message %}
+    <div class="flash flash-success">
+        {% if message.startswith("created:") %}
+        Пользователь <strong>{{ message.split(":", 1)[1] }}</strong> создан.
+        {% elif message.startswith("password_reset:") %}
+        Пароль пользователя <strong>{{ message.split(":", 1)[1] }}</strong> обновлён.
+        {% elif message.startswith("deleted:") %}
+        Пользователь <strong>{{ message.split(":", 1)[1] }}</strong> удалён.
+        {% else %}
+        {{ message }}
+        {% endif %}
+    </div>
+    {% endif %}
+    {% if error %}
+    <div class="flash flash-error">
+        {% if error == "username_exists" %}
+        Пользователь с таким username уже существует.
+        {% elif error == "cannot_delete_self" %}
+        Нельзя удалить текущую админскую сессию.
+        {% elif error == "cannot_delete_system_admin" %}
+        Системного администратора удалять нельзя.
+        {% else %}
+        {{ error }}
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endif %}
+
+<section class="access-layout">
+    <div class="card card-soft access-users-panel">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow">Web Auth</span>
+                <h2>Текущие пользователи</h2>
+            </div>
+        </div>
+
+        {% if web_users %}
+        <div class="access-user-list">
+            {% for item in web_users %}
+            <article class="access-user-card">
+                <div class="access-user-head">
+                    <div class="access-user-ident">
+                        <span class="access-user-username">@{{ item.username }}</span>
+                        <h3>{{ item.display_name }}</h3>
+                    </div>
+                    {% if item.can_delete %}
+                    <form method="post" action="/access/web-users/{{ item.username }}/delete" class="access-delete-form">
+                        <button type="submit" class="danger access-delete-button">Удалить</button>
+                    </form>
+                    {% endif %}
+                </div>
+
+                <div class="access-user-grid">
+                    <div class="access-field">
+                        <span class="access-field-label">Username</span>
+                        <code>{{ item.username }}</code>
+                    </div>
+                    <div class="access-field access-field-secret">
+                        <span class="access-field-label">Password</span>
+                        {% if item.password_plain %}
+                        <code>{{ item.password_plain }}</code>
+                        {% else %}
+                        <span class="access-empty">Не сохранён. Задайте новый пароль.</span>
+                        {% endif %}
+                    </div>
+                    <div class="access-field">
+                        <span class="access-field-label">Имя</span>
+                        <strong class="access-display-name">{{ item.display_name }}</strong>
+                    </div>
+                </div>
+
+                <form method="post" action="/access/web-users/{{ item.username }}/reset-password"
+                    class="inline-password-form access-password-form access-password-form-inline">
+                    <input type="password" name="password" placeholder="Новый пароль" required>
+                    <button type="submit">{{ "Сменить пароль" if item.password_plain else "Сохранить пароль" }}</button>
+                </form>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="access-empty-state">
+            <strong>Пользователей пока нет</strong>
+            <span>Создайте первую web-учётку в панели справа.</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <aside class="card card-soft side-panel access-create-panel">
+        <div class="section-head compact">
+            <div>
+                <span class="eyebrow">Create</span>
+                <h2>Новая учётка</h2>
+            </div>
+        </div>
+        <p class="muted access-create-copy">Минимальная форма для быстрого добавления преподавателя или внутреннего пользователя.</p>
+
+        <form method="post" action="/access/web-users/create" class="stack-form access-create-form">
+            <label>Username<input type="text" name="username" required></label>
+            <label>Password<input type="password" name="password" required></label>
+            <label>Имя<input type="text" name="display_name" required></label>
+            <div class="form-grid two-cols">
+                <label>Role<input type="text" name="role" value="teacher"></label>
+                <label>Linked teacher ID<input type="number" name="linked_teacher_id" value="0"></label>
+            </div>
+            <button type="submit">Создать пользователя</button>
+        </form>
+    </aside>
+</section>
+{% endblock %}

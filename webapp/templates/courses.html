@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero hero-courses">
+    <div class="hero-main">
+        <span class="eyebrow">Course Library</span>
+        <h1>Выберите курс</h1>
+        <p class="hero-text">Откройте нужный курс и сразу перейдите к урокам, чтобы сформировать ОС вручную.</p>
+    </div>
+    <div class="card side-panel">
+        <div class="section-head compact">
+            <div>
+                <h2>Курсов в базе</h2>
+            </div>
+        </div>
+        <div class="metric-inline">
+            <strong>{{ courses|length }}</strong>
+        </div>
+    </div>
+</section>
+
+<section class="course-grid">
+    {% for course in courses %}
+    <a class="course-tile" href="/courses/{{ course.name }}">
+        <span class="course-count">{{ course.lesson_count }} {{ course.lesson_count|ru_plural('урок', 'урока', 'уроков')
+            }}</span>
+        <h2>{{ course.name }}</h2>
+        <p>{{ course.preview_text or 'Откройте курс, чтобы выбрать урок, дату занятия и параметры формирования ОС.' }}
+        </p>
+        <span class="course-cta">Открыть курс</span>
+    </a>
+    {% endfor %}
+</section>
+{% endblock %}
