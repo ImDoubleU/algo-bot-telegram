@@ -6,7 +6,7 @@ os.environ.setdefault("TELEGRAM_BOT_TOKEN", "000000000:UNIT_TEST_TOKEN")
 
 import bot
 from app.core.feedback import FeedbackService
-from core.feedback_text import MAX_BOT_URL
+from core.feedback_text import MAX_BOT_LINK_LABEL, MAX_BOT_URL
 
 
 EXPECTED_TEXT = (
@@ -19,8 +19,21 @@ OLD_URL = "algoritmika52.ru"
 class FeedbackTextTests(unittest.TestCase):
     def assert_has_max_bot_block(self, text: str) -> None:
         self.assertIn(EXPECTED_TEXT, text)
-        self.assertIn(MAX_BOT_URL, text)
+        self.assertIn(f"🔗 {MAX_BOT_LINK_LABEL}", text)
+        self.assertNotIn(MAX_BOT_URL, text)
         self.assertNotIn(OLD_URL, text)
+
+    def assert_has_clickable_max_bot_label(self, text: str) -> None:
+        entities = bot.build_feedback_link_entities(text)
+        self.assertEqual(len(entities), 1)
+        entity = entities[0]
+        self.assertEqual(entity.url, MAX_BOT_URL)
+
+        utf16_text = text.encode("utf-16-le")
+        linked_text = utf16_text[
+            entity.offset * 2:(entity.offset + entity.length) * 2
+        ].decode("utf-16-le")
+        self.assertEqual(linked_text, MAX_BOT_LINK_LABEL)
 
     def test_telegram_feedback_variants_have_max_bot_link(self):
         args = ("Урок", 1, datetime(2026, 9, 4), {"educational_results": "Итоги"})
@@ -34,6 +47,7 @@ class FeedbackTextTests(unittest.TestCase):
         for text in variants:
             with self.subTest(text=text[:40]):
                 self.assert_has_max_bot_block(text)
+                self.assert_has_clickable_max_bot_label(text)
 
     def test_service_feedback_variants_have_max_bot_link(self):
         service = FeedbackService(courses_service=None)

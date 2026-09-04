@@ -7,7 +7,7 @@ import logging
 import logging.handlers
 import traceback
 from datetime import datetime, timedelta
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import LinkPreviewOptions, MessageEntity, Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters, CallbackQueryHandler
 from backup_manager import BackupManager, monthly_maintenance
 from config import BOT_CONFIG, BACKUP_CONFIG
@@ -16,7 +16,7 @@ from services.activity_tracker_service import UserActivityTracker
 from services.teacher_group_service import TeacherGroupManager, WEEKDAY_NAMES
 from services.teacher_hub_service import TeacherHubManager
 from core.callback_router import CallbackRouter
-from core.feedback_text import build_astrocoins_block
+from core.feedback_text import MAX_BOT_LINK_LABEL, MAX_BOT_URL, build_astrocoins_block
 from core.telegram_api import telegram_api_call
 from core.ui_errors import build_error_keyboard, build_error_text
 from core.validation import ValidationError, parse_date, parse_int, parse_time
@@ -56,6 +56,22 @@ AUTO_FEEDBACK_CSV_HEADERS = [
     "user_name",
     "action",
 ]
+FEEDBACK_LINK_PREVIEW_OPTIONS = LinkPreviewOptions(is_disabled=True)
+
+
+def build_feedback_link_entities(text: str) -> list[MessageEntity]:
+    label_start = text.find(MAX_BOT_LINK_LABEL)
+    if label_start < 0:
+        return []
+
+    utf16_offset = len(text[:label_start].encode("utf-16-le")) // 2
+    utf16_length = len(MAX_BOT_LINK_LABEL.encode("utf-16-le")) // 2
+    return [MessageEntity(
+        type=MessageEntity.TEXT_LINK,
+        offset=utf16_offset,
+        length=utf16_length,
+        url=MAX_BOT_URL,
+    )]
 
 try:
     with open('data/courses.json', 'r', encoding='utf-8') as f:
@@ -712,7 +728,9 @@ async def send_auto_feedback_for_group(
         sent_message_ids.append(sent.message_id)
     sent = await _safe_send(lambda: application.bot.send_message(
         chat_id=group_row["teacher_chat_id"],
-        text=feedback_text
+        text=feedback_text,
+        entities=build_feedback_link_entities(feedback_text),
+        link_preview_options=FEEDBACK_LINK_PREVIEW_OPTIONS,
     ), f"auto_feedback_payload_group_{group_row['id']}")
     if not sent:
         await log_auto_feedback_csv(
@@ -1599,6 +1617,7 @@ async def show_lesson(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                 await update.message.reply_photo(
                     photo=open(image_path, 'rb'),
                     caption=feedback_text,
+                    caption_entities=build_feedback_link_entities(feedback_text),
                     reply_markup=reply_markup
                 )
             else:
@@ -1606,17 +1625,22 @@ async def show_lesson(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                 await update.callback_query.message.chat.send_photo(
                     photo=open(image_path, 'rb'),
                     caption=feedback_text,
+                    caption_entities=build_feedback_link_entities(feedback_text),
                     reply_markup=reply_markup
                 )
         else:
             if update.message:
                 await update.message.reply_text(
                     feedback_text,
+                    entities=build_feedback_link_entities(feedback_text),
+                    link_preview_options=FEEDBACK_LINK_PREVIEW_OPTIONS,
                     reply_markup=reply_markup
                 )
             else:
                 await update.callback_query.message.edit_text(
                     feedback_text,
+                    entities=build_feedback_link_entities(feedback_text),
+                    link_preview_options=FEEDBACK_LINK_PREVIEW_OPTIONS,
                     reply_markup=reply_markup
                 )
 
@@ -1719,6 +1743,7 @@ async def show_online_individual_lesson(update: Update, context: ContextTypes.DE
             await update.message.reply_photo(
                 photo=open(image_path, 'rb'),
                 caption=feedback_text,
+                caption_entities=build_feedback_link_entities(feedback_text),
                 reply_markup=reply_markup
             )
         else:
@@ -1726,17 +1751,22 @@ async def show_online_individual_lesson(update: Update, context: ContextTypes.DE
             await update.callback_query.message.chat.send_photo(
                 photo=open(image_path, 'rb'),
                 caption=feedback_text,
+                caption_entities=build_feedback_link_entities(feedback_text),
                 reply_markup=reply_markup
             )
     else:
         if update.message:
             await update.message.reply_text(
                 feedback_text,
+                entities=build_feedback_link_entities(feedback_text),
+                link_preview_options=FEEDBACK_LINK_PREVIEW_OPTIONS,
                 reply_markup=reply_markup
             )
         else:
             await update.callback_query.message.edit_text(
                 feedback_text,
+                entities=build_feedback_link_entities(feedback_text),
+                link_preview_options=FEEDBACK_LINK_PREVIEW_OPTIONS,
                 reply_markup=reply_markup
             )
 
