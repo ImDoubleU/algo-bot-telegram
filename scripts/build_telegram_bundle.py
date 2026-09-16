@@ -26,7 +26,6 @@ SOURCE_FILES = (
     "deploy/linux/algo-bot-telegram.service",
     "deploy/linux/install_telegram.sh",
     "deploy/linux/update_telegram.sh",
-    "deploy/linux/README_TELEGRAM_RU.md",
 )
 STATE_FILES = (
     "logs/user_analytics.csv",

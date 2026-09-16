@@ -43,6 +43,10 @@ tmp_*
 *.bak
 *.log
 
+# Documentation is kept locally, outside the application source publication
+*.md
+!README.md
+
 # Local deployment state
 deploy/windows/caddy/logs/
 deploy/windows/caddy/data/
