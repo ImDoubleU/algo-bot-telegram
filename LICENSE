@@ -1,0 +1,68 @@
+PORTFOLIO REVIEW LICENSE
+Version 1.0, 16 September 2026
+
+Copyright (c) 2023-2026 Dmitry Oleynik. All rights reserved.
+
+1. Purpose
+
+This repository is made publicly visible solely to demonstrate the author's
+professional skills and to allow prospective employers, clients, and
+recruiters to evaluate the author's work. This is source-available software;
+it is not open-source software or free software.
+
+2. Limited permission for evaluation
+
+Subject to all terms below, an evaluator may view the repository and may make
+and run a temporary private copy solely to evaluate the author for a potential
+professional engagement. Any copyright, authorship, trademark, and license
+notices must remain intact.
+
+3. Restrictions
+
+Except for the limited permission in Section 2 and rights that cannot lawfully
+be restricted, no permission is granted to:
+
+- use the software or any part of it for purposes other than evaluating the
+  author;
+- publish, distribute, redistribute, mirror, transmit, or otherwise provide
+  the software or any part of it to another person;
+- modify, adapt, translate, reverse engineer, or create derivative works;
+- deploy or use the software in production, education, research, a product,
+  a service, or any commercial or non-commercial project;
+- sell, rent, sublicense, assign, or otherwise transfer any rights;
+- use the software, source code, assets, or documentation to create or enrich
+  a dataset, or to train, fine-tune, evaluate, or operate an artificial
+  intelligence or machine-learning system;
+- remove or obscure any copyright, authorship, trademark, or license notice.
+
+Platform-native viewing and forking rights that the repository owner grants
+under the hosting platform's mandatory terms remain governed by those terms.
+They do not grant permission to use the contents outside the platform or for
+any purpose not expressly allowed by this license.
+
+4. Ownership and third-party materials
+
+The author retains all rights, title, and interest in original materials in
+this repository. Third-party libraries, frameworks, media, fonts, trademarks,
+and other third-party materials remain subject to their respective terms and
+are not relicensed by this document.
+
+5. Termination
+
+The limited permission in Section 2 terminates automatically upon any breach
+of this license. After termination, all copies made under that permission must
+be deleted.
+
+6. No warranty
+
+THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT
+PERMITTED BY LAW, THE AUTHOR SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+OTHER LIABILITY ARISING FROM THE MATERIALS OR THEIR USE.
+
+7. Additional permission
+
+Any use not expressly permitted above requires prior written permission from
+the copyright holder. Permission may be requested through the repository
+owner's GitHub profile.
