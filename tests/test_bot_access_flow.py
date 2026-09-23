@@ -123,6 +123,34 @@ class BotAccessFlowTests(unittest.IsolatedAsyncioTestCase):
             sent_text,
         )
 
+    async def test_access_list_handles_markdown_characters_in_profile(self):
+        query_message = SimpleNamespace(edit_text=AsyncMock())
+        query = SimpleNamespace(answer=AsyncMock(), message=query_message)
+        update = SimpleNamespace(callback_query=query)
+        context = SimpleNamespace()
+        manager = Mock()
+        manager.get_access_list.return_value = [
+            {
+                "user_id": 202,
+                "username": "teacher_name",
+                "first_name": "Name *with* [markup]",
+                "last_name": "Last_Name",
+                "granted_at": "2026-09-23 11:00:00",
+                "source": "database",
+            }
+        ]
+
+        with patch.object(bot, "access_manager", manager):
+            await bot.show_access_list(update, context)
+
+        query.answer.assert_awaited_once()
+        query_message.edit_text.assert_awaited_once()
+        sent_text = query_message.edit_text.await_args.args[0]
+        sent_kwargs = query_message.edit_text.await_args.kwargs
+        self.assertIn("@teacher_name", sent_text)
+        self.assertIn("Name *with* [markup] Last_Name", sent_text)
+        self.assertNotIn("parse_mode", sent_kwargs)
+
 
 if __name__ == "__main__":
     unittest.main()

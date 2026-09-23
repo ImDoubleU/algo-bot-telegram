@@ -2727,47 +2727,50 @@ async def handle_back_to_lesson_nav(update: Update, context: ContextTypes.DEFAUL
     await show_lesson_navigation(update, context, course_name, lessons, current_index)
 
 
+def build_access_list_text(users) -> str:
+    """Build an access list without parsing user-controlled values as markup."""
+    if not users:
+        return "👥 Список пользователей с доступом\n\nНет пользователей с доступом."
+
+    lines = ["👥 Список пользователей с доступом", ""]
+    for index, user_data in enumerate(users, 1):
+        user_id = user_data["user_id"]
+        username = " ".join(str(user_data.get("username") or "").split())
+        first_name = " ".join(str(user_data.get("first_name") or "").split())
+        last_name = " ".join(str(user_data.get("last_name") or "").split())
+        granted_at = str(user_data.get("granted_at") or "")
+        source = user_data.get("source", "unknown")
+
+        if username and username not in {"unknown", "config_user"}:
+            display_name = f"@{username}"
+        else:
+            display_name = f"ID: {user_id}"
+
+        if first_name and first_name != "Из":
+            full_name = first_name
+            if last_name and last_name != "config":
+                full_name += f" {last_name}"
+            display_name += f" ({full_name})"
+
+        lines.append(f"{index}. {display_name}")
+        lines.append(f"   🆔 ID: {user_id}")
+        if source == "config":
+            lines.append("   📌 Источник: системный доступ")
+        else:
+            lines.append(f"   📅 Доступ предоставлен: {granted_at[:16] or 'неизвестно'}")
+        lines.append("")
+
+    lines.append(f"Всего пользователей с доступом: {len(users)}")
+    return "\n".join(lines)
+
+
 async def show_access_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Показывает список пользователей с доступом"""
     query = update.callback_query
     await query.answer()
 
     users = access_manager.get_access_list()
-
-    if not users:
-        text = "👥 *Список пользователей с доступом*\n\nНет пользователей с доступом."
-    else:
-        text = "👥 *Список пользователей с доступом*\n\n"
-        for i, user_data in enumerate(users, 1):
-            user_id = user_data['user_id']
-            username = user_data['username']
-            first_name = user_data['first_name']
-            last_name = user_data['last_name']
-            granted_at = user_data['granted_at']
-            source = user_data.get('source', 'unknown')
-
-            if username and username != 'unknown' and username != 'config_user':
-                display_name = f"@{username}"
-            else:
-                display_name = f"ID: {user_id}"
-
-            if first_name and first_name != 'Из':
-                display_name += f" ({first_name}"
-                if last_name and last_name != 'config':
-                    display_name += f" {last_name}"
-                display_name += ")"
-
-            text += f"{i}. {display_name}\n"
-            text += f"   🆔 ID: `{user_id}`\n"
-
-            if source == 'config':
-                text += f"   📌 Источник: системный доступ\n"
-            else:
-                text += f"   📅 Доступ предоставлен: {granted_at[:16]}\n"
-
-            text += "\n"
-
-        text += f"*Всего пользователей с доступом: {len(users)}*"
+    text = build_access_list_text(users)
 
     keyboard = [
         [InlineKeyboardButton("🔗 Создать ссылку доступа",
@@ -2783,7 +2786,7 @@ async def show_access_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await query.message.edit_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+    await query.message.edit_text(text, reply_markup=reply_markup)
 
 
 async def create_access_invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
